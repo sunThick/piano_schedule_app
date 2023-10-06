@@ -41,6 +41,8 @@ dependencies:
   path: ^1.8.2
   build_runner: ^2.3.3
   drift_dev: ^2.4.1
+  table_calendar: ^3.0.9
+  intl: ^0.18.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
