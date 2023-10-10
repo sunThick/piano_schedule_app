@@ -10,6 +10,7 @@ class HomePageModel extends ChangeNotifier {
 
   selectDay(DateTime day) {
     selectedDay = day;
+    focusedDay = day;
     notifyListeners();
   }
 }
