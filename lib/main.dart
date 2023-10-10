@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:piano_schedule_app/viewModels/homePageModel.dart';
+import 'package:piano_schedule_app/viewModels/timeTableModel.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
-  initializeDateFormatting().then((_) => runApp(MyApp()));
+  initializeDateFormatting().then((_) => runApp(const ProviderScope(
+        child: MyApp(),
+      )));
 }
 
 class MyApp extends StatelessWidget {
@@ -13,58 +18,52 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(),
+      home: HomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
-
+class HomePage extends ConsumerWidget {
+  const HomePage({Key? key}) : super(key: key);
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final HomePageModel homePageModel = ref.watch(homePageProvider);
+    final TimeTableModel timeTableModel = ref.watch(timeTableProvider);
+    final focusedDay = homePageModel.focusedDay;
+    final selectedDay = homePageModel.selectedDay;
 
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.red,
-          // title: Text(widget.title),
         ),
         body: Center(
-          child: TableCalendar(
-            locale: 'ja_JP',
-            firstDay: DateTime.utc(2023, 10, 1),
-            lastDay: DateTime.utc(2025, 12, 31),
-            focusedDay: _focusedDay,
-            selectedDayPredicate: (day) {
-              return isSameDay(_selectedDay, day);
-            },
-            onDaySelected: (selectedDay, focusedDay) {
-              if (!isSameDay(_selectedDay, selectedDay)) {
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay;
-                  print(selectedDay);
-                });
-              }
-            },
-            headerStyle: const HeaderStyle(
-              formatButtonVisible: false,
-            ),
+          child: Column(
+            children: [
+              TableCalendar(
+                locale: 'ja_JP',
+                firstDay: DateTime.utc(2023, 10, 1),
+                lastDay: DateTime.utc(2025, 12, 31),
+                focusedDay: focusedDay,
+                selectedDayPredicate: (day) {
+                  return isSameDay(selectedDay, day);
+                },
+                onDaySelected: (selectedDay, focusedDay) {
+                  homePageModel.selectDay(selectedDay);
+                },
+                headerStyle: const HeaderStyle(
+                  formatButtonVisible: false,
+                ),
+              ),
+              Consumer(builder: (context, ref, _) {
+                return ListView(
+                  shrinkWrap: true,
+                );
+              }),
+            ],
           ),
         ));
   }
