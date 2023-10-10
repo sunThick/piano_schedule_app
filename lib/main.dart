@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:piano_schedule_app/viewModels/homePageModel.dart';
-import 'package:piano_schedule_app/viewModels/timeTableModel.dart';
+import 'package:piano_schedule_app/viewModels/home_page_model.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -22,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }
@@ -32,7 +31,6 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final HomePageModel homePageModel = ref.watch(homePageProvider);
-    final TimeTableModel timeTableModel = ref.watch(timeTableProvider);
     final focusedDay = homePageModel.focusedDay;
     final selectedDay = homePageModel.selectedDay;
 
